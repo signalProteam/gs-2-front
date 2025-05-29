@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+.section-conteudo {
+    @apply flex flex-col items-center p-5 my-5 bg-white rounded-lg shadow-md max-w-11/12 mx-auto w-3xl
+}
+
+.section-conteudo h1 {
+    @apply text-3xl font-bold mb-10 sm:text-4xl
+}
+
+.section-conteudo h2 {
+    @apply text-2xl font-bold mb-10 sm:text-3xl
+}
+
+.section-conteudo p+p {
+    @apply mt-4;
+}
