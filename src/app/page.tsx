@@ -29,7 +29,7 @@ export default function Home() {
                         </Link>
                     </div>
 
-                    <div className="mt-10 flex ml-10 sm:flex-row flex-col items-center">
+                    {/* <div className="mt-10 flex ml-10 sm:flex-row flex-col items-center">
                         <Link href="/apoiar">
                             <Botao texto="Apoiar" />
                         </Link>
@@ -37,7 +37,7 @@ export default function Home() {
                         <Link href="/">
                             <Botao texto="Teste" />
                         </Link>
-                    </div>
+                    </div> */}
                 </section>
 
                 <section className="section-conteudo">
