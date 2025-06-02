@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BiUser } from "react-icons/bi";
 
 export function Header() {
     const [logado, setLogado] = useState(false);
@@ -40,20 +39,20 @@ export function Header() {
 
     return (
         <>
-            <header className="flex font-bold bg-blue-300 py-4 sm:text-xl relative z-50">
+            <header className="flex font-bold bg-blue-400 py-4 sm:text-xl relative z-50 text-white">
                 <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
                     {/* Botão de Login e Logout */}
                     {!loading && (
                         <div className="absolute top-2 right-2 flex flex-col items-end">
                             <button
                                 onClick={logado ? handleLogout : handleLogin}
-                                className="flex items-center gap-2 bg-blue-500 px-3 py-1 rounded-md text-white hover:bg-blue-600 transition hover:cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl"
+                                className="flex items-center gap-2 border-2 px-4 py-2 rounded-xl text-white hover:border-blue-200 transition hover:cursor-pointer text-sm sm:text-base md:text-lg"
                             >
-                                <BiUser className="text-lg" />
                                 {logado ? "Logout" : "Login"}
                             </button>
                         </div>
                     )}
+
                     {/* Logo */}
                     <Link href="/" aria-label="Ir para a página inicial">
                         <Image
