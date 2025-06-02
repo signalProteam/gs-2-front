@@ -60,7 +60,7 @@ export function Header() {
                             alt="Logo"
                             width={80}
                             height={80}
-                            className="mb-5 w-14 h-14 md:w-16 md:h-16 lg:h-24 lg:w-24"
+                            className="mb-5 w-20 h-20 md:w-24 md:h-24"
                         />
                     </Link>
 
@@ -75,7 +75,7 @@ export function Header() {
 
                     {/* Botão de menu mobile */}
                     <button
-                        className="sm:hidden w-24 px-4 py-2 bg-blue-500 text-white rounded font-bold"
+                        className="sm:hidden w-24 px-4 py-2 border-2 text-white rounded font-bold"
                         onClick={() => setMenuAberto(!menuAberto)}
                     >
                         {menuAberto ? "Fechar" : "Menu"}
@@ -83,7 +83,7 @@ export function Header() {
 
                     {/* Menu mobile */}
                     {menuAberto && (
-                        <div className="sm:hidden font-bold w-40 absolute top-full bg-blue-300 shadow-md">
+                        <div className="sm:hidden font-bold w-40 absolute top-full bg-blue-400 shadow-md">
                             <ul className="flex flex-col items-center py-2.5 space-y-2.5 w-full">
                                 <li className="w-full">
                                     <Link
