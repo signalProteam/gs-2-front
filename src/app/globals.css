@@ -15,3 +15,7 @@
 .section-conteudo p+p {
     @apply mt-4;
 }
+
+.section-conteudo label {
+    @apply font-semibold
+}

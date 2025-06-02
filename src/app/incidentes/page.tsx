@@ -1,4 +1,22 @@
+"use client"
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 const Incidentes = () => {
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        const storedCargo = localStorage.getItem("userCargo");
+
+        if (!token || !storedCargo) {
+            router.push("/login");
+            return;
+        }
+    }, [router]);
+
+
     return (
         <>
             <section className="section-conteudo">

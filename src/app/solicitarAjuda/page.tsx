@@ -5,14 +5,14 @@ import Botao from "../components/botao/botao";
 type HelpRequestDTO = {
     localizacao: string;
     descricao: string;
-    telefone: string;
+    cep: string;
 };
 
 const solicitarAjudar = () => {
     const [formData, setFormData] = useState<HelpRequestDTO>({
         localizacao: '',
         descricao: '',
-        telefone: ''
+        cep: ''
     });
 
     const [message, setMessage] = useState('');
@@ -42,7 +42,8 @@ const solicitarAjudar = () => {
         <>
             <section className="section-conteudo">
                 <h1>Solicitar Ajudar</h1>
-                <p className="mx-4 mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci optio quisquam aut architecto iusto harum sequi rem quis modi, sapiente voluptate minus dolorum. Voluptas doloremque iure animi doloribus officia veniam!</p>
+                {/* <p className="mx-4 mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci optio quisquam aut architecto iusto harum sequi rem quis modi, sapiente voluptate minus dolorum. Voluptas doloremque iure animi doloribus officia veniam!</p> */}
+
                 <form className="w-full max-w-md border-2 rounded-md bg-blue-100" onSubmit={handleSubmit}>
                     <div className="flex flex-col items-center">
                         <label htmlFor="titulo" className="mt-4">Titulo:</label>
@@ -50,22 +51,22 @@ const solicitarAjudar = () => {
                             type="text"
                             id="titulo"
                             name="titulo"
-                            className={`p-2 text-black rounded-md w-11/12 bg-white mx-auto border-2`}
+                            className={`p-2 rounded-md w-11/12 bg-white mx-auto border-1`}
                         />
 
-                        <label htmlFor="tel" className="mt-4">Telefone:</label>
+                        <label htmlFor="cep" className="mt-4">CEP:</label>
                         <input
-                            type="tel"
-                            id="tel"
-                            name="tel"
-                            className={`p-2 text-black rounded-md w-11/12 bg-white mx-auto border-2`}
+                            type="cep"
+                            id="cep"
+                            name="cep"
+                            className={`p-2 rounded-md w-11/12 bg-white mx-auto border-1`}
                         />
 
                         <label htmlFor="descricao" className="mt-4">Descrição:</label>
                         <textarea
                             id="descricao"
                             name="descricao"
-                            className={`p-2 text-black rounded-md w-11/12 h-36 resize-none bg-white mx-auto border-2`}
+                            className={`p-2 rounded-md w-11/12 h-36 resize-none bg-white mx-auto border-1`}
                         />
                         <Botao texto="Enviar" />
                     </div>

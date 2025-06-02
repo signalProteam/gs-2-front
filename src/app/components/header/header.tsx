@@ -1,16 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { BiUser } from "react-icons/bi";
 
 export function Header() {
+    const [logado, setLogado] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
     const [menuAberto, setMenuAberto] = useState(false);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem("authToken");
+            setLogado(!!token);
+            setLoading(false);
+        };
+
+        checkAuth();
+        window.addEventListener("storage", checkAuth);
+
+        return () => {
+            window.removeEventListener("storage", checkAuth);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        setLogado(false);
+        router.push("/login");
+    };
+
+
+    const handleLogin = () => {
+        router.push("/login");
+    };
 
     return (
         <>
-            <header className="flex font-bold bg-blue-300 py-4 sm:text-xl relative">
+            <header className="flex font-bold bg-blue-300 py-4 sm:text-xl relative z-50">
                 <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
+                    {/* Botão de Login e Logout */}
+                    {!loading && (
+                        <div className="absolute top-2 right-2 flex flex-col items-end">
+                            <button
+                                onClick={logado ? handleLogout : handleLogin}
+                                className="flex items-center gap-2 bg-blue-500 px-3 py-1 rounded-md text-white hover:bg-blue-600 transition hover:cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl"
+                            >
+                                <BiUser className="text-lg" />
+                                {logado ? "Logout" : "Login"}
+                            </button>
+                        </div>
+                    )}
                     {/* Logo */}
                     <Link href="/" aria-label="Ir para a página inicial">
                         <Image
@@ -39,13 +82,37 @@ export function Header() {
                         {menuAberto ? "Fechar" : "Menu"}
                     </button>
 
-                    {/* Menu lateral mobile */}
+                    {/* Menu mobile */}
                     {menuAberto && (
-                        <div className="sm:hidden font-bold w-2/4 absolute top-full bg-blue-300 shadow-md">
-                            <ul className="flex flex-col items-center py-2.5 space-y-2.5">
-                                <li><Link href="/" onClick={() => setMenuAberto(false)}>Início</Link></li>
-                                <li><Link href="/apoiar" onClick={() => setMenuAberto(false)}>Parceria</Link></li>
-                                <li><Link href="/integrantes" onClick={() => setMenuAberto(false)}>Integrantes</Link></li>
+                        <div className="sm:hidden font-bold w-40 absolute top-full bg-blue-300 shadow-md">
+                            <ul className="flex flex-col items-center py-2.5 space-y-2.5 w-full">
+                                <li className="w-full">
+                                    <Link
+                                        href="/"
+                                        onClick={() => setMenuAberto(false)}
+                                        className="block w-full text-center py-0.5"
+                                    >
+                                        Início
+                                    </Link>
+                                </li>
+                                <li className="w-full">
+                                    <Link
+                                        href="/apoiar"
+                                        onClick={() => setMenuAberto(false)}
+                                        className="block w-full text-center py-0.5"
+                                    >
+                                        Parceria
+                                    </Link>
+                                </li>
+                                <li className="w-full">
+                                    <Link
+                                        href="/integrantes"
+                                        onClick={() => setMenuAberto(false)}
+                                        className="block w-full text-center py-0.5"
+                                    >
+                                        Integrantes
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                     )}
