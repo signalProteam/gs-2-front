@@ -8,9 +8,8 @@ const Incidentes = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
-        const storedCargo = localStorage.getItem("userCargo");
 
-        if (!token || !storedCargo) {
+        if (!token) {
             router.push("/login");
             return;
         }
