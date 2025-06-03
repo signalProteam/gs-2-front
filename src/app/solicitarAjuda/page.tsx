@@ -1,79 +1,150 @@
-'use client'
+"use client";
 
 import { useState } from "react";
-import Botao from "../components/botao/botao";
-type HelpRequestDTO = {
-    localizacao: string;
-    descricao: string;
-    cep: string;
-};
+import Botao from "@/app/components/botao/botao";
+import { API_BASE, getHeaders } from "@/app/services/api";
 
-const solicitarAjudar = () => {
-    const [formData, setFormData] = useState<HelpRequestDTO>({
-        localizacao: '',
-        descricao: '',
-        cep: ''
+const CompSolicitarAjuda = () => {
+
+    const [formData, setFormData] = useState({
+        cep: "",
+        contactInfo: "",
+        notes: "",
     });
 
-    const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({
+        cep: "",
+        contactInfo: "",
+        notes: "",
+    });
+
+    const [message, setMessage] = useState("");
+
+    const formatCep = (value: string) => {
+        return value
+            .replace(/\D/g, "")
+            .replace(/^(\d{5})(\d{0,3})/, "$1-$2")
+            .slice(0, 9);
+    };
+
+    const formatTelefone = (value: string) => {
+        return value
+            .replace(/\D/g, "")
+            .replace(/^(\d{2})(\d{0,5})(\d{0,4})/, "($1) $2-$3")
+            .slice(0, 15);
+    };
+
+    const validarCampos = () => {
+        const cepRegex = /^\d{5}-\d{3}$/;
+        const telefoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+
+        const novosErros = {
+            cep: formData.cep.trim() === ""
+                ? "Informe o CEP"
+                : !cepRegex.test(formData.cep)
+                    ? "CEP inválido"
+                    : "",
+
+            contactInfo: formData.contactInfo.trim() === ""
+                ? "Informe o telefone"
+                : !telefoneRegex.test(formData.contactInfo)
+                    ? "Telefone inválido"
+                    : "",
+
+            notes: formData.notes.trim() === ""
+                ? "Informe a descrição"
+                : "",
+        };
+
+        setErrors(novosErros);
+        return !Object.values(novosErros).some((erro) => erro !== "");
+    };
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage("");
+
+        if (!validarCampos()) return;
 
         try {
-            const response = await fetch('http://localhost:8080/api/help', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+            const resposta = await fetch(`${API_BASE}/solicitar-ajuda`, {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify(formData),
             });
 
-            if (!response.ok) throw new Error('Erro ao enviar solicitação.');
-
-            const data = await response.json();
-            setMessage(`Pedido registrado com sucesso! ID: ${data.id}`);
-        } catch (error: any) {
-            setMessage(`Erro: ${error.message}`);
+            if (resposta.ok) {
+                setMessage("Solicitação enviada com sucesso!");
+                setFormData({ cep: "", contactInfo: "", notes: "" });
+                setErrors({ cep: "", contactInfo: "", notes: "" });
+            } else {
+                setMessage("Erro ao enviar a solicitação.");
+            }
+        } catch (error) {
+            setMessage("Erro ao conectar com o servidor.");
         }
     };
 
     return (
-        <>
-            <section className="section-conteudo">
-                <h1>Solicitar Ajudar</h1>
-                {/* <p className="mx-4 mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci optio quisquam aut architecto iusto harum sequi rem quis modi, sapiente voluptate minus dolorum. Voluptas doloremque iure animi doloribus officia veniam!</p> */}
+        <section className="section-conteudo">
+            <h1 className="text-3xl font-bold text-center mb-4">Solicitar Ajuda</h1>
+            <form
+                className="w-full max-w-md border-2 rounded-md bg-blue-100 text-center mx-auto p-4"
+                onSubmit={handleSubmit}
+            >
+                <div className="flex flex-col items-center">
+                    <label htmlFor="cep" className="mt-4">CEP:</label>
+                    <input
+                        type="text"
+                        id="cep"
+                        maxLength={9}
+                        value={formData.cep}
+                        onChange={(e) =>
+                            setFormData({ ...formData, cep: formatCep(e.target.value) })
+                        }
+                        className={`p-2 rounded-md w-11/12 bg-white mx-auto border ${errors.cep ? "border-red-500" : "border-blue-500"}`}
+                        placeholder="00000-000"
+                    />
+                    {errors.cep && <p className="text-red-500 mt-1">{errors.cep}</p>}
 
-                <form className="w-full max-w-md border-2 rounded-md bg-blue-100" onSubmit={handleSubmit}>
-                    <div className="flex flex-col items-center">
-                        <label htmlFor="titulo" className="mt-4">Titulo:</label>
-                        <input
-                            type="text"
-                            id="titulo"
-                            name="titulo"
-                            className={`p-2 rounded-md w-11/12 bg-white mx-auto border-1`}
-                        />
+                    <label htmlFor="contactInfo" className="mt-4">Telefone:</label>
+                    <input
+                        type="text"
+                        id="contactInfo"
+                        maxLength={15}
+                        value={formData.contactInfo}
+                        onChange={(e) =>
+                            setFormData({ ...formData, contactInfo: formatTelefone(e.target.value) })
+                        }
+                        className={`p-2 rounded-md w-11/12 bg-white mx-auto border ${errors.contactInfo ? "border-red-500" : "border-blue-500"}`}
+                        placeholder="(00) 00000-0000"
+                    />
+                    {errors.contactInfo && <p className="text-red-500 mt-1">{errors.contactInfo}</p>}
 
-                        <label htmlFor="cep" className="mt-4">CEP:</label>
-                        <input
-                            type="cep"
-                            id="cep"
-                            name="cep"
-                            className={`p-2 rounded-md w-11/12 bg-white mx-auto border-1`}
-                        />
+                    <label htmlFor="notes" className="mt-4">Descrição:</label>
+                    <textarea
+                        id="notes"
+                        value={formData.notes}
+                        onChange={(e) =>
+                            setFormData({ ...formData, notes: e.target.value })
+                        }
+                        className={`p-2 rounded-md w-11/12 h-36 resize-none bg-white mx-auto border ${errors.notes ? "border-red-500" : "border-blue-500"}`}
+                        placeholder="Descreva sua situação."
+                    />
+                    {errors.notes && <p className="text-red-500 mt-1">{errors.notes}</p>}
 
-                        <label htmlFor="descricao" className="mt-4">Descrição:</label>
-                        <textarea
-                            id="descricao"
-                            name="descricao"
-                            className={`p-2 rounded-md w-11/12 h-36 resize-none bg-white mx-auto border-1`}
-                        />
-                        <Botao texto="Enviar" />
-                    </div>
-                </form>
-            </section>
-        </>
-    )
-}
+                    <Botao type="submit" texto="Enviar" />
+                </div>
+            </form>
 
-export default solicitarAjudar;
+            {message && (
+                <p className={`mt-4 text-center font-semibold ${message.startsWith("Erro") ? "text-red-500" : "text-blue-500"}`}>
+                    {message}
+                </p>
+            )}
+        </section>
+    );
+};
+
+export default CompSolicitarAjuda;
