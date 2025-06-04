@@ -4,7 +4,7 @@ import { useState } from "react";
 import Botao from "@/app/components/botao/botao";
 import { API_BASE, getHeaders } from "@/app/services/api";
 
-const CompSolicitarAjuda = () => {
+const SolicitarAjuda = () => {
 
     const [formData, setFormData] = useState({
         cep: "",
@@ -147,4 +147,4 @@ const CompSolicitarAjuda = () => {
     );
 };
 
-export default CompSolicitarAjuda;
+export default SolicitarAjuda;
