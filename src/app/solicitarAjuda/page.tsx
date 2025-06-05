@@ -60,12 +60,31 @@ const SolicitarAjuda = () => {
         return !Object.values(novosErros).some((erro) => erro !== "");
     };
 
+    const verificarCepExiste = async (cep: string): Promise<boolean> => {
+        try {
+            const res = await fetch(`https://viacep.com.br/ws/${cep.replace(/\D/g, "")}/json/`);
+            if (!res.ok) return false;
+            const data = await res.json();
+            return !data.erro;
+        } catch {
+            return false;
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage("");
 
         if (!validarCampos()) return;
+
+        // Verifica se o CEP existe antes de enviar
+        const cepValido = await verificarCepExiste(formData.cep);
+        if (!cepValido) {
+            setErrors(prev => ({ ...prev, cep: "CEP não encontrado." }));
+            return;
+        } else {
+            setErrors(prev => ({ ...prev, cep: "" }));
+        }
 
         try {
             const resposta = await fetch(`${API_BASE}/solicitar-ajuda`, {
@@ -85,6 +104,7 @@ const SolicitarAjuda = () => {
             setMessage("Erro ao conectar com o servidor.");
         }
     };
+
 
     return (
         <section className="section-conteudo">

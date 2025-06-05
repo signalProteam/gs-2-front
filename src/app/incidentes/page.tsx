@@ -9,9 +9,21 @@ type HelpRequest = {
     cep: string | null;
     contactInfo: string;
     notes: string;
-    enderecoAproximado: string | null;
-    requestTimestamp: string;
-    status: string;
+    enderecoAproximado?: string | null;
+    requestTimestamp?: string;
+    status?: string;
+};
+
+const buscarEnderecoPorCep = async (cep: string): Promise<string | null> => {
+    try {
+        const res = await fetch(`https://viacep.com.br/ws/${cep.replace(/\D/g, "")}/json/`);
+        if (!res.ok) throw new Error("Erro ao buscar CEP");
+        const data = await res.json();
+        if (data.erro) return null;
+        return `${data.logradouro || ""}, ${data.bairro || ""}, ${data.localidade || ""} - ${data.uf || ""}`.replace(/^(, )+|(, )+$/g, "").trim();
+    } catch {
+        return null;
+    }
 };
 
 const Incidentes = () => {
@@ -19,27 +31,10 @@ const Incidentes = () => {
     const [solicitacoes, setSolicitacoes] = useState<HelpRequest[]>([]);
     const [erro, setErro] = useState("");
 
-    const extrairCep = (endereco: string | null, cep: string | null): string | null => {
-        if (cep) return cep;
-        if (!endereco) return null;
-
-        const matchHifen = endereco.match(/\b\d{5}-\d{3}\b/);
-        if (matchHifen) return matchHifen[0];
-
-        const matchSemHifen = endereco.match(/\b\d{8}\b/);
-        if (matchSemHifen) return matchSemHifen[0];
-
-        const matchCinco = endereco.match(/\b\d{5}\b/);
-        if (matchCinco) return matchCinco[0];
-
-        return null;
-    };
-
-
     useEffect(() => {
         const fetchSolicitacoes = async () => {
             try {
-                const response = await fetch(`${API_BASE}/solicitar-ajuda`, {
+                const response = await fetch(`${API_BASE}/incidentes`, {
                     headers: getHeaders(),
                 });
 
@@ -47,15 +42,25 @@ const Incidentes = () => {
                     throw new Error("Erro ao buscar solicitações.");
                 }
 
-                const data = await response.json();
+                const data: HelpRequest[] = await response.json();
 
-                data.sort((a: HelpRequest, b: HelpRequest) => {
-                    return new Date(b.requestTimestamp).getTime() - new Date(a.requestTimestamp).getTime();
+                const dadosComEndereco = await Promise.all(
+                    data.map(async (item) => {
+                        if (item.cep) {
+                            const endereco = await buscarEnderecoPorCep(item.cep);
+                            return { ...item, enderecoAproximado: endereco };
+                        }
+                        return { ...item, enderecoAproximado: null };
+                    })
+                );
+
+                dadosComEndereco.sort((a, b) => {
+                    const dateA = a.requestTimestamp ? new Date(a.requestTimestamp).getTime() : 0;
+                    const dateB = b.requestTimestamp ? new Date(b.requestTimestamp).getTime() : 0;
+                    return dateB - dateA;
                 });
 
-                console.log("Dados recebidos da API:", data);
-
-                setSolicitacoes(data);
+                setSolicitacoes(dadosComEndereco);
             } catch (err) {
                 setErro("Erro ao carregar dados da API.");
             }
@@ -63,6 +68,8 @@ const Incidentes = () => {
 
         fetchSolicitacoes();
     }, [router]);
+
+    const extrairCep = (cep: string | null) => cep || "Não informado";
 
     return (
         <section className="section-conteudo">
@@ -74,34 +81,31 @@ const Incidentes = () => {
                 <p className="mt-4">Nenhuma solicitação encontrada.</p>
             ) : (
                 <ul className="mt-4 space-y-10 w-3/4">
-                    {solicitacoes.map((item) => (
-                        <li key={item.id} className="border-2 border-blue-500 bg-blue-50 rounded-md p-4">
-                            <p><strong>CEP:</strong> {extrairCep(item.enderecoAproximado, item.cep) || "Não informado"}</p>
-
+                    {solicitacoes.map((item, index) => (
+                        <li
+                            key={item.id ?? `${item.cep ?? "semcep"}-${index}`}
+                            className="border-2 border-blue-500 bg-blue-50 rounded-md p-4"
+                        >
+                            <p><strong>CEP:</strong> {extrairCep(item.cep)}</p>
                             <p>
                                 <strong>Endereço:</strong>{" "}
-                                <a
-                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.enderecoAproximado || "nao informado")}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 underline"
-                                >
-                                    {item.enderecoAproximado || "Não informado"}
-                                </a>
+                                {item.enderecoAproximado ? (
+                                    <a
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                            item.enderecoAproximado
+                                        )}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 underline"
+                                    >
+                                        {item.enderecoAproximado}
+                                    </a>
+                                ) : (
+                                    "Não informado"
+                                )}
                             </p>
-
                             <p><strong>Telefone:</strong> {item.contactInfo}</p>
                             <p><strong>Descrição:</strong> {item.notes}</p>
-                            <p>
-                                <strong>Data:</strong>{" "}
-                                {new Date(item.requestTimestamp).toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })}
-                            </p>
                         </li>
                     ))}
                 </ul>
