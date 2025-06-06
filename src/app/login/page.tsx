@@ -18,11 +18,13 @@ const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErro("");
-        setErroCampos({ usuario: !usuario, senha: !senha });
 
         if (!usuario || !senha) {
             setErro("Por favor, preencha todos os campos.");
+            setErroCampos({ usuario: !usuario, senha: !senha });
             return;
+        } else {
+            setErroCampos({ usuario: false, senha: false });
         }
 
         setCarregando(true);
@@ -66,7 +68,9 @@ const Login = () => {
                             value={usuario}
                             onChange={(e) => setUsuario(e.target.value)}
                             placeholder="Digite seu usuário"
-                            className={`border-2 border-blue-500 p-2 rounded-md w-11/12 bg-white mx-auto ${erroCampos.usuario ? "border-2 border-red-500" : ""}`}
+                            className={`border-2 p-2 rounded-md w-11/12 bg-white mx-auto ${erroCampos.usuario ? "border-red-500" : "border-blue-500"
+                                }`}
+
                         />
                     </div>
                     <div className="flex flex-col mb-4">
@@ -77,7 +81,8 @@ const Login = () => {
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
                             placeholder="Digite sua senha"
-                            className={`border-2 border-blue-500 p-2 rounded-md w-11/12 bg-white mx-auto ${erroCampos.senha ? "border-2 border-red-500" : ""}`}
+                            className={`border-2 p-2 rounded-md w-11/12 bg-white mx-auto ${erroCampos.senha ? "border-red-500" : "border-blue-500"
+                                }`}
                         />
                     </div>
                     {erro && <p className="text-red-500 mb-4">{erro}</p>}
