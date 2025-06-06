@@ -3,16 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { API_BASE, getHeaders } from "../services/api";
+import Link from "next/link";
 
 type HelpRequest = {
-    id: number;
-    cep: string | null;
+    cep: string;
     contactInfo: string;
     notes: string;
     enderecoAproximado?: string | null;
-    requestTimestamp?: string;
-    status?: string;
+    latitude: number;
+    longitude: number;
 };
+
+
 
 const buscarEnderecoPorCep = async (cep: string): Promise<string | null> => {
     try {
@@ -67,12 +69,6 @@ const Incidentes = () => {
                     })
                 );
 
-                dadosComEndereco.sort((a, b) => {
-                    const dateA = a.requestTimestamp ? new Date(a.requestTimestamp).getTime() : 0;
-                    const dateB = b.requestTimestamp ? new Date(b.requestTimestamp).getTime() : 0;
-                    return dateB - dateA;
-                });
-
                 setSolicitacoes(dadosComEndereco);
             } catch (err) {
                 setErro("Erro ao carregar dados da API.");
@@ -81,8 +77,6 @@ const Incidentes = () => {
 
         fetchSolicitacoes();
     }, [router]);
-
-    const extrairCep = (cep: string | null) => cep || "Não informado";
 
     if (verificandoLogin) {
         return (
@@ -103,17 +97,15 @@ const Incidentes = () => {
                 <ul className="mt-4 space-y-10 w-3/4">
                     {solicitacoes.map((item, index) => (
                         <li
-                            key={item.id ?? `${item.cep ?? "semcep"}-${index}`}
+                            key={`${item.cep}-${index}`}
                             className="border-2 border-blue-500 bg-blue-50 rounded-md p-4"
                         >
-                            <p><strong>CEP:</strong> {extrairCep(item.cep)}</p>
+                            <p><strong>CEP:</strong> {item.cep}</p>
                             <p>
                                 <strong>Endereço:</strong>{" "}
                                 {item.enderecoAproximado ? (
                                     <a
-                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                            item.enderecoAproximado
-                                        )}`}
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.enderecoAproximado)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-600 underline"
