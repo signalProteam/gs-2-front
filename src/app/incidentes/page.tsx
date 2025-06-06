@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { API_BASE, getHeaders } from "../services/api";
 import Link from "next/link";
+import Botao from "../components/botao/botao";
 
 type HelpRequest = {
+    id: number;
     cep: string;
     contactInfo: string;
     notes: string;
@@ -13,7 +15,6 @@ type HelpRequest = {
     latitude: number;
     longitude: number;
 };
-
 
 
 const buscarEnderecoPorCep = async (cep: string): Promise<string | null> => {
@@ -85,6 +86,30 @@ const Incidentes = () => {
         );
     }
 
+    const resolverIncidente = async (id: number) => {
+        try {
+            const response = await fetch(`${API_BASE}/incidentes/${id}`, {
+                method: 'PUT',
+                headers: getHeaders()
+            });
+
+            if (!response.ok) {
+                const textoErro = await response.text();
+                throw new Error(`Status ${response.status}: ${textoErro}`);
+            }
+
+            alert('Incidente resolvido com sucesso!');
+            setSolicitacoes((prev) => prev.filter((item) => item.id !== id));
+        } catch (error) {
+            if (error instanceof Error) {
+                alert('Erro ao resolver incidente: ' + error.message);
+            } else {
+                alert('Erro ao resolver incidente: erro desconhecido');
+            }
+        }
+    };
+
+
     return (
         <section className="section-conteudo">
             <h1>Incidentes</h1>
@@ -104,20 +129,29 @@ const Incidentes = () => {
                             <p>
                                 <strong>Endereço:</strong>{" "}
                                 {item.enderecoAproximado ? (
-                                    <a
+                                    <Link
                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.enderecoAproximado)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-600 underline"
                                     >
                                         {item.enderecoAproximado}
-                                    </a>
+                                    </Link>
                                 ) : (
                                     "Não informado"
                                 )}
                             </p>
                             <p><strong>Telefone:</strong> {item.contactInfo}</p>
                             <p><strong>Descrição:</strong> {item.notes}</p>
+
+                            <div className="flex justify-center mt-4">
+                                <Botao
+                                    texto="Resolver Incidente"
+                                    carregando={false}
+                                    type="button"
+                                    onClick={() => resolverIncidente(item.id)}
+                                />
+                            </div>
                         </li>
                     ))}
                 </ul>
