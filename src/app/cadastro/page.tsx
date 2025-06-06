@@ -4,51 +4,73 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE, getHeaders } from "../services/api";
 import Botao from "../components/botao/botao";
-import Link from "next/link";
 
-
-const Login = () => {
+const Cadastro = () => {
     const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
-    const [erro, setErro] = useState("");
+    const [erro, setErro] = useState<string[]>([]);
+    const [sucesso, setSucesso] = useState("");
     const [carregando, setCarregando] = useState(false);
     const [erroCampos, setErroCampos] = useState({ usuario: false, senha: false });
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErro("");
+        setErro([]);
+        setSucesso("");
         setErroCampos({ usuario: !usuario, senha: !senha });
 
-        if (!usuario || !senha) {
-            setErro("Por favor, preencha todos os campos.");
-            return;
+        const erros: string[] = [];
+        const novosErrosCampos = { usuario: false, senha: false };
+
+        if (!usuario) {
+            erros.push("Por favor, preencha o campo de usuário.");
+            novosErrosCampos.usuario = true;
+        } else if (usuario.length < 5) {
+            erros.push("O usuário deve ter pelo menos 5 caracteres.");
+            novosErrosCampos.usuario = true;
         }
+
+        if (!senha) {
+            erros.push("Por favor, preencha o campo de senha.");
+            novosErrosCampos.senha = true;
+        } else if (senha.length < 5) {
+            erros.push("A senha deve ter pelo menos 5 caracteres.");
+            novosErrosCampos.senha = true;
+        }
+
+        setErro(erros);
+        setErroCampos(novosErrosCampos);
+
+        if (erros.length > 0) return;
+
 
         setCarregando(true);
 
         try {
-            const response = await fetch(`${API_BASE}/login`, {
+            const response = await fetch(`${API_BASE}/usuarios`, {
                 method: "POST",
                 headers: getHeaders(),
-                body: JSON.stringify({ username: usuario, password: senha }),
+                body: JSON.stringify({ username: usuario, password: senha })
             });
 
             if (response.ok) {
-                const data = await response.json();
-
-                localStorage.setItem("authToken", "logado");
-
-                window.dispatchEvent(new Event("storage"));
-                router.push("/incidentes");
-            } else if (response.status === 401) {
-                setErro("Usuário ou senha inválidos!");
+                setSucesso("Usuário cadastrado com sucesso!");
+                setUsuario("");
+                setSenha("");
+                setErro([]);
             } else {
-                setErro("Erro inesperado. Tente novamente mais tarde.");
+                const texto = await response.text();
+
+                if (texto.includes("ORA-00001")) {
+                    setErro(["Nome de usuário já está em uso."]);
+                } else {
+                    setErro([`Erro ao cadastrar: ${texto}`]);
+                }
             }
         } catch (error) {
             console.error("Erro ao conectar à API:", error);
-            setErro("Não foi possível conectar ao servidor.");
+            setErro(["Não foi possível conectar ao servidor."]);
         } finally {
             setCarregando(false);
         }
@@ -80,17 +102,22 @@ const Login = () => {
                             className={`border-2 border-blue-500 p-2 rounded-md w-11/12 bg-white mx-auto ${erroCampos.senha ? "border-2 border-red-500" : ""}`}
                         />
                     </div>
-                    {erro && <p className="text-red-500 mb-4">{erro}</p>}
 
-                    <Botao type="submit" texto="Conectar" carregando={carregando} />
+                    {erro.length > 0 && (
+                        <ul className="text-red-500 mb-4">
+                            {erro.map((e, i) => (
+                                <li key={i}>{e}</li>
+                            ))}
+                        </ul>
+                    )}
 
-                    <p>
-                        <Link href="/cadastro" className="hover:text-blue-600 hover:underline">Cadastre-se</Link>
-                    </p>
+                    {sucesso && <p className="text-blue-500 mb-4">{sucesso}</p>}
+
+                    <Botao type="submit" texto="Cadastrar" carregando={carregando} />
                 </form>
             </section>
         </main>
     );
 };
 
-export default Login;
+export default Cadastro;
