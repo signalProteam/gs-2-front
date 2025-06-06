@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { API_BASE, getHeaders } from "../services/api";
 import Botao from "../components/botao/botao";
+import Link from "next/link";
 
 const Cadastro = () => {
     const [usuario, setUsuario] = useState("");
@@ -114,6 +115,10 @@ const Cadastro = () => {
                     {sucesso && <p className="text-blue-500 mb-4">{sucesso}</p>}
 
                     <Botao type="submit" texto="Cadastrar" carregando={carregando} />
+
+                    <p>
+                        <Link href="/login" className="hover:text-blue-600 hover:underline">Login</Link>
+                    </p>
                 </form>
             </section>
         </main>

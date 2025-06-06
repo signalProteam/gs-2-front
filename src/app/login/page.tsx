@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { API_BASE, getHeaders } from "../services/api";
 import Botao from "../components/botao/botao";
 import Link from "next/link";
-
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -13,7 +12,10 @@ const Login = () => {
     const [erro, setErro] = useState("");
     const [carregando, setCarregando] = useState(false);
     const [erroCampos, setErroCampos] = useState({ usuario: false, senha: false });
+
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect") || "/";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,12 +39,9 @@ const Login = () => {
             });
 
             if (response.ok) {
-                const data = await response.json();
-
                 localStorage.setItem("authToken", "logado");
-
                 window.dispatchEvent(new Event("storage"));
-                router.push("/incidentes");
+                router.push(redirect);
             } else if (response.status === 401) {
                 setErro("Usuário ou senha inválidos!");
             } else {
@@ -55,6 +54,7 @@ const Login = () => {
             setCarregando(false);
         }
     };
+
 
     return (
         <main>

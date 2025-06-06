@@ -30,6 +30,19 @@ const Incidentes = () => {
     const router = useRouter();
     const [solicitacoes, setSolicitacoes] = useState<HelpRequest[]>([]);
     const [erro, setErro] = useState("");
+    const [verificandoLogin, setVerificandoLogin] = useState(true);
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            const redirectTo = window.location.pathname;
+            router.push(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+            return;
+        } else {
+            setVerificandoLogin(false);
+        }
+    }, [router]);
 
     useEffect(() => {
         const fetchSolicitacoes = async () => {
@@ -70,6 +83,13 @@ const Incidentes = () => {
     }, [router]);
 
     const extrairCep = (cep: string | null) => cep || "Não informado";
+
+    if (verificandoLogin) {
+        return (
+            <>
+            </>
+        );
+    }
 
     return (
         <section className="section-conteudo">
