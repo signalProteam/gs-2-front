@@ -5,6 +5,7 @@ import Botao from "@/app/components/botao/botao";
 import { API_BASE, getHeaders } from "@/app/services/api";
 
 const SolicitarAjuda = () => {
+    const [carregando, setCarregando] = useState(false);
 
     const [formData, setFormData] = useState({
         cep: "",
@@ -102,6 +103,8 @@ const SolicitarAjuda = () => {
             }
         } catch (error) {
             setMessage("Erro ao conectar com o servidor.");
+        } finally {
+            setCarregando(false);
         }
     };
 
@@ -154,7 +157,7 @@ const SolicitarAjuda = () => {
                     />
                     {errors.notes && <p className="text-red-500 mt-1">{errors.notes}</p>}
 
-                    <Botao type="submit" texto="Enviar" />
+                    <Botao type="submit" texto="Enviar" carregando={carregando} />
                 </div>
             </form>
 

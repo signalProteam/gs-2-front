@@ -14,8 +14,8 @@ type HelpRequest = {
     enderecoAproximado?: string | null;
     latitude: number;
     longitude: number;
+    status: "PENDENTE" | "EM_ANDAMENTO" | "CONCLUIDO";
 };
-
 
 const buscarEnderecoPorCep = async (cep: string): Promise<string | null> => {
     try {
@@ -23,7 +23,10 @@ const buscarEnderecoPorCep = async (cep: string): Promise<string | null> => {
         if (!res.ok) throw new Error("Erro ao buscar CEP");
         const data = await res.json();
         if (data.erro) return null;
-        return `${data.logradouro || ""}, ${data.bairro || ""}, ${data.localidade || ""} - ${data.uf || ""}`.replace(/^(, )+|(, )+$/g, "").trim();
+        return `${data.logradouro || ""}, ${data.bairro || ""}, ${data.localidade || ""} - ${data.uf || ""
+            }`
+            .replace(/^(, )+|(, )+$/g, "")
+            .trim();
     } catch {
         return null;
     }
@@ -34,6 +37,7 @@ const Incidentes = () => {
     const [solicitacoes, setSolicitacoes] = useState<HelpRequest[]>([]);
     const [erro, setErro] = useState("");
     const [verificandoLogin, setVerificandoLogin] = useState(true);
+    const [carregandoId, setCarregandoId] = useState<number | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -47,50 +51,70 @@ const Incidentes = () => {
         }
     }, [router]);
 
-    useEffect(() => {
-        const fetchSolicitacoes = async () => {
-            try {
-                const response = await fetch(`${API_BASE}/incidentes`, {
-                    headers: getHeaders(),
-                });
+    const fetchSolicitacoes = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/incidentes`, {
+                headers: getHeaders(),
+            });
 
-                if (!response.ok) {
-                    throw new Error("Erro ao buscar solicitações.");
-                }
-
-                const data: HelpRequest[] = await response.json();
-
-                const dadosComEndereco = await Promise.all(
-                    data.map(async (item) => {
-                        if (item.cep) {
-                            const endereco = await buscarEnderecoPorCep(item.cep);
-                            return { ...item, enderecoAproximado: endereco };
-                        }
-                        return { ...item, enderecoAproximado: null };
-                    })
-                );
-
-                setSolicitacoes(dadosComEndereco);
-            } catch (err) {
-                setErro("Erro ao carregar dados da API.");
+            if (response.status === 204) {
+                setSolicitacoes([]);
+                setErro("");
+                return;
             }
-        };
 
+            if (!response.ok) {
+                throw new Error("Erro ao buscar solicitações.");
+            }
+
+            const data: HelpRequest[] = await response.json();
+
+            const dadosComEndereco = await Promise.all(
+                data.map(async (item) => {
+                    if (item.cep) {
+                        const endereco = await buscarEnderecoPorCep(item.cep);
+                        return { ...item, enderecoAproximado: endereco };
+                    }
+                    return { ...item, enderecoAproximado: null };
+                })
+            );
+
+            setSolicitacoes(dadosComEndereco);
+            setErro("");
+        } catch (err) {
+            setErro("Erro ao carregar dados da API.");
+        }
+    };
+
+
+    useEffect(() => {
         fetchSolicitacoes();
-    }, [router]);
+    }, []);
 
     if (verificandoLogin) {
-        return (
-            <>
-            </>
-        );
+        return <></>;
     }
 
-    const resolverIncidente = async (id: number) => {
+    const formatarStatus = (status: HelpRequest["status"]) => {
+        switch (status) {
+            case "PENDENTE":
+                return "Pendente";
+            case "EM_ANDAMENTO":
+                return "Em andamento";
+            case "CONCLUIDO":
+                return "Concluído";
+            default:
+                return status;
+        }
+    };
+
+
+    const atualizarStatusIncidente = async (id: number) => {
+        setCarregandoId(id);
         try {
             const response = await fetch(`${API_BASE}/incidentes/${id}`, {
-                method: 'PUT',
-                headers: getHeaders()
+                method: "PUT",
+                headers: getHeaders(),
             });
 
             if (!response.ok) {
@@ -98,17 +122,32 @@ const Incidentes = () => {
                 throw new Error(`Status ${response.status}: ${textoErro}`);
             }
 
-            alert('Incidente resolvido com sucesso!');
-            setSolicitacoes((prev) => prev.filter((item) => item.id !== id));
+            setSolicitacoes((prev) => {
+                const atualizados = prev.map((item) => {
+                    if (item.id === id) {
+                        if (item.status === "PENDENTE") {
+                            return { ...item, status: "EM_ANDAMENTO" as const };
+                        } else if (item.status === "EM_ANDAMENTO") {
+                            return { ...item, status: "CONCLUIDO" as const };
+                        }
+                    }
+                    return item;
+                });
+
+                const filtrados = atualizados.filter((item) => item.status !== "CONCLUIDO");
+
+                return filtrados;
+            });
+
+
         } catch (error) {
-            if (error instanceof Error) {
-                alert('Erro ao resolver incidente: ' + error.message);
-            } else {
-                alert('Erro ao resolver incidente: erro desconhecido');
-            }
+            const mensagemErro =
+                error instanceof Error ? error.message : "erro desconhecido";
+            alert("Erro ao atualizar status do incidente: " + mensagemErro);
+        } finally {
+            setCarregandoId(null);
         }
     };
-
 
     return (
         <section className="section-conteudo">
@@ -120,17 +159,21 @@ const Incidentes = () => {
                 <p className="mt-4">Nenhuma solicitação encontrada.</p>
             ) : (
                 <ul className="mt-4 space-y-10 w-3/4">
-                    {solicitacoes.map((item, index) => (
+                    {solicitacoes.map((item) => (
                         <li
-                            key={`${item.cep}-${index}`}
+                            key={item.id}
                             className="border-2 border-blue-500 bg-blue-50 rounded-md p-4"
                         >
-                            <p><strong>CEP:</strong> {item.cep}</p>
+                            <p>
+                                <strong>CEP:</strong> {item.cep}
+                            </p>
                             <p>
                                 <strong>Endereço:</strong>{" "}
                                 {item.enderecoAproximado ? (
                                     <Link
-                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.enderecoAproximado)}`}
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                            item.enderecoAproximado
+                                        )}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-blue-600 underline"
@@ -141,17 +184,31 @@ const Incidentes = () => {
                                     "Não informado"
                                 )}
                             </p>
-                            <p><strong>Telefone:</strong> {item.contactInfo}</p>
-                            <p><strong>Descrição:</strong> {item.notes}</p>
+                            <p>
+                                <strong>Telefone:</strong> {item.contactInfo}
+                            </p>
+                            <p>
+                                <strong>Descrição:</strong> {item.notes}
+                            </p>
+                            <p>
+                                <strong>Status:</strong> {formatarStatus(item.status)}
+                            </p>
 
-                            <div className="flex justify-center mt-4">
-                                <Botao
-                                    texto="Resolver Incidente"
-                                    carregando={false}
-                                    type="button"
-                                    onClick={() => resolverIncidente(item.id)}
-                                />
-                            </div>
+
+                            {item.status !== "CONCLUIDO" && (
+                                <div className="flex justify-center mt-4">
+                                    <Botao
+                                        texto={
+                                            item.status === "PENDENTE"
+                                                ? "Iniciar Atendimento"
+                                                : "Finalizar Incidente"
+                                        }
+                                        carregando={carregandoId === item.id}
+                                        type="button"
+                                        onClick={() => atualizarStatusIncidente(item.id)}
+                                    />
+                                </div>
+                            )}
                         </li>
                     ))}
                 </ul>
