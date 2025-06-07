@@ -31,9 +31,17 @@ export default function Home() {
 
                 <section className="section-conteudo">
                     <h2>Sobre</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus aperiam, id natus eveniet dolores porro? Alias ab ea ducimus assumenda laboriosam maiores consequuntur dolore placeat necessitatibus! Eaque, hic. Explicabo, minus.</p>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repellendus sint animi modi quas quidem in ad, dolor sunt quae placeat adipisci cumque obcaecati illum, explicabo et quos excepturi amet vero!</p>
+                    <p>
+                        O <strong>VOZ (Voz de Orientação e Zelo)</strong> é um projeto dedicado a apoiar pessoas em situações de desastre e pós-desastre, com foco especial no bem-estar psicológico de cada indivíduo afetado.
+                    </p>
+                    <p>
+                        Sabemos que momentos de crise podem gerar medo, insegurança e desorientação. Por isso, o VOZ oferece orientações práticas e acolhimento emocional para ajudar cada pessoa a se manter firme, informada e amparada.
+                    </p>
+                    <p>
+                        Nosso objetivo é oferecer uma voz amiga e confiável em tempos difíceis — promovendo calma, segurança e esperança, mesmo nos cenários mais desafiadores.
+                    </p>
                 </section>
+
             </main>
         </>
     );
