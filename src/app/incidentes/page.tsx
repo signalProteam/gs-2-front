@@ -82,6 +82,7 @@ const Incidentes = () => {
             setSolicitacoes(dadosComEndereco);
             setErro("");
         } catch (err) {
+            console.error(err);
             setErro("Erro ao carregar dados da API.");
         }
     };

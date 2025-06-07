@@ -102,6 +102,7 @@ const SolicitarAjuda = () => {
                 setMessage("Erro ao enviar a solicitação.");
             }
         } catch (error) {
+            console.error(error);
             setMessage("Erro ao conectar com o servidor.");
         } finally {
             setCarregando(false);
