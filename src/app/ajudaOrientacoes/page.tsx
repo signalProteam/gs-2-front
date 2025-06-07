@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 
-const ajudaOrientacoes = () => {
+const AjudaOrientacoes = () => {
     const [perguntasAbertas, setPerguntasAbertas] = useState<{ [key: number]: boolean }>({});
 
     const togglePergunta = (index: number) => {
@@ -85,4 +85,4 @@ const ajudaOrientacoes = () => {
     );
 };
 
-export default ajudaOrientacoes;
+export default AjudaOrientacoes;

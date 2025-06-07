@@ -65,7 +65,7 @@ export function Header() {
                     </Link>
 
                     {/* Menu normal */}
-                    <nav /* className="hidden sm:block" */>
+                    <nav className="hidden sm:block">
                         <ul className="flex space-x-4 text-lg">
                             <li><Link className="hover:underline" href="/">Início</Link></li>
                             <li><Link className="hover:underline" href="/integrantes">Integrantes</Link></li>
@@ -73,15 +73,15 @@ export function Header() {
                     </nav>
 
                     {/* Botão de menu mobile */}
-{/*                     <button
+                    <button
                         className="sm:hidden w-24 px-4 py-2 border-2 text-white rounded font-bold"
                         onClick={() => setMenuAberto(!menuAberto)}
                     >
                         {menuAberto ? "Fechar" : "Menu"}
-                    </button> */}
+                    </button>
 
                     {/* Menu mobile */}
-                    {/*                     {menuAberto && (
+                    {menuAberto && (
                         <div className="sm:hidden font-bold w-40 absolute top-full bg-blue-400 shadow-md">
                             <ul className="flex flex-col items-center py-2.5 space-y-2.5 w-full">
                                 <li className="w-full">
@@ -104,7 +104,7 @@ export function Header() {
                                 </li>
                             </ul>
                         </div>
-                    )} */}
+                    )}
                 </div>
             </header>
         </>
