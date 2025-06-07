@@ -3,7 +3,7 @@ import CompLogin from "../components/compLogin/compLogin";
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={<div className="text-center">Carregando login...</div>}>
+        <Suspense fallback={<div className="text-center">Carregando...</div>}>
             <CompLogin />
         </Suspense>
     );
