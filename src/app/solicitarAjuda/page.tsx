@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Botao from "@/app/components/botao/botao";
+import Botao from "../components/botao/botao";
 import { API_BASE, getHeaders } from "@/app/services/api";
 
 const SolicitarAjuda = () => {
