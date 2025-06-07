@@ -11,7 +11,7 @@ type Props = {
     linkedin: string
 }
 
-const CompIntegrante = ({ nome, rm, turma, foto, linkedin }: Props) => {
+const CardIntegrante = ({ nome, rm, turma, foto, linkedin }: Props) => {
     return (
         <article className="mb-5 border-4 border-blue-600 p-4 sm:p-4 md:p-5 text-center">
             <Image
@@ -36,4 +36,4 @@ const CompIntegrante = ({ nome, rm, turma, foto, linkedin }: Props) => {
     )
 }
 
-export default CompIntegrante
+export default CardIntegrante

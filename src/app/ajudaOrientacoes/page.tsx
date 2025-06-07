@@ -54,7 +54,7 @@ const ajudaOrientacoes = () => {
 
                     <div className="space-y-4 w-11/12">
                         {dados.map((item, index) => (
-                            <div key={index} className="bg-blue-50 border border-blue-500 rounded-lg shadow-sm">
+                            <div key={index} className="border-2 border-blue-500 rounded-lg shadow-sm">
                                 <button
                                     onClick={() => togglePergunta(index)}
                                     className="font-bold p-4 w-full flex justify-between cursor-pointer"

@@ -113,7 +113,7 @@ const SolicitarAjuda = () => {
         <section className="section-conteudo">
             <h1 className="text-3xl font-bold text-center mb-4">Solicitar Ajuda</h1>
             <form
-                className="w-full max-w-md border-2 rounded-md bg-blue-100 text-center mx-auto p-4"
+                className="w-full max-w-md border-2 border-blue-500 rounded-md bg-blue-100 text-center mx-auto p-4"
                 onSubmit={handleSubmit}
             >
                 <div className="flex flex-col items-center">

@@ -18,7 +18,7 @@ const chatAjuda = () => {
         const texto = mensagem.trim();
         if (!texto) return;
 
-        // Adiciona mensagem do usuário
+        // mensagem do usuário
         setConversa((prev) => [...prev, { autor: "usuario", texto }]);
         setMensagem("");
         setErro(null);
@@ -39,7 +39,7 @@ const chatAjuda = () => {
             const data = await res.json();
             const respostaAssistente = data.answer;
 
-            // Adiciona resposta do assistente
+            // resposta do assistente
             setConversa((prev) => [...prev, { autor: "assistente", texto: respostaAssistente }]);
         } catch (e) {
             console.error(e);
@@ -56,8 +56,8 @@ const chatAjuda = () => {
         <section className="section-conteudo">
             <h1 className="text-2xl font-bold mb-4">Chat com Assistente</h1>
 
-            {/* Área do chat */}
-            <div className="bg-blue-100 rounded-lg p-4 min-h-96 w-11/12 overflow-y-auto mb-4">
+            {/* Area do chat */}
+            <div className="bg-blue-100 border-2 border-blue-500 rounded-lg p-4 min-h-96 w-11/12 overflow-y-auto mb-4">
                 {conversa.map((msg, idx) => (
                     <div key={idx} className={`flex mb-2 ${msg.autor === "usuario" ? "justify-end" : "justify-start"}`}>
                         <div
@@ -82,7 +82,7 @@ const chatAjuda = () => {
                     value={mensagem}
                     onChange={(e) => setMensagem(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && enviarMensagem()}
-                    className="flex-1 border border-gray-400 rounded-lg px-3 py-2 w-11/12"
+                    className="flex-1 border-2 border-gray-400 rounded-lg px-3 py-2 w-11/12"
                     placeholder="Digite sua mensagem..."
                     disabled={carregando}
                 />

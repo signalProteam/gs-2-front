@@ -1,5 +1,5 @@
 import { FaGithub } from "react-icons/fa";
-import CompIntegrante from "../components/compIntegrante/compIntegrante";
+import CardIntegrante from "../components/cardIntegrante/cardIntegrante";
 
 const Integrantes = () => {
 
@@ -12,7 +12,7 @@ const Integrantes = () => {
                     </h1>
 
                     <div>
-                        <CompIntegrante
+                        <CardIntegrante
                             nome="Eduardo Osterloh Bindo"
                             rm="559755"
                             turma="1TDSPA"
@@ -20,7 +20,7 @@ const Integrantes = () => {
                             linkedin="https://www.linkedin.com/in/eduardo-osterloh-bindo-500b02268/"
                         />
 
-                        <CompIntegrante
+                        <CardIntegrante
                             nome="Lucas José Lima"
                             rm="561160"
                             turma="1TDSPA"
@@ -28,7 +28,7 @@ const Integrantes = () => {
                             linkedin="https://www.linkedin.com/in/lucasjos%C3%A9lima/"
                         />
 
-                        <CompIntegrante
+                        <CardIntegrante
                             nome="Rangel Bernardi Jordão"
                             rm="560547"
                             turma="1TDSPA"
