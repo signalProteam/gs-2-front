@@ -8,7 +8,7 @@ type Mensagem = {
     texto: string;
 };
 
-const ajudaChat = () => {
+const chatAjuda = () => {
     const [mensagem, setMensagem] = useState("");
     const [conversa, setConversa] = useState<Mensagem[]>([]);
     const [carregando, setCarregando] = useState(false);
@@ -100,4 +100,4 @@ const ajudaChat = () => {
     );
 };
 
-export default ajudaChat;
+export default chatAjuda;

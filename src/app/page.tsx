@@ -15,11 +15,11 @@ export default function Home() {
                             <BotaoBalao texto="Solicitar Ajuda" />
                         </Link>
 
-                        <Link href="/faq">
-                            <BotaoBalao texto="FAQ" />
+                        <Link href="/ajudaOrientacoes">
+                            <BotaoBalao texto="Ajuda e Orientações" />
                         </Link>
 
-                        <Link href="/ajudaChat">
+                        <Link href="/chatAjuda">
                             <BotaoBalao texto="Chat" />
                         </Link>
 
