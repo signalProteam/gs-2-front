@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API_BASE, getHeaders } from "../services/api";
 
 type Mensagem = {
@@ -13,6 +13,17 @@ const ChatAjuda = () => {
     const [conversa, setConversa] = useState<Mensagem[]>([]);
     const [carregando, setCarregando] = useState(false);
     const [erro, setErro] = useState<string | null>(null);
+    const chatRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (chatRef.current) {
+            chatRef.current.scrollTo({
+                top: chatRef.current.scrollHeight,
+                behavior: "smooth",
+            });
+        }
+    }, [conversa, carregando]);
+
 
     const enviarMensagem = async () => {
         const texto = mensagem.trim();
@@ -57,7 +68,9 @@ const ChatAjuda = () => {
             <h1 className="text-2xl font-bold mb-4">Chat com Assistente</h1>
 
             {/* Area do chat */}
-            <div className="bg-blue-100 border-2 border-blue-500 rounded-lg p-4 min-h-96 w-11/12 overflow-y-auto mb-4">
+            <div
+                ref={chatRef}
+                className="bg-blue-100 border-2 border-blue-500 rounded-lg p-4 min-h-96 w-11/12 overflow-y-auto mb-4">
                 {conversa.map((msg, idx) => (
                     <div key={idx} className={`flex mb-2 ${msg.autor === "usuario" ? "justify-end" : "justify-start"}`}>
                         <div

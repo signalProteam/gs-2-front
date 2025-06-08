@@ -113,12 +113,18 @@ const SolicitarAjuda = () => {
     return (
         <section className="section-conteudo">
             <h1 className="text-3xl font-bold text-center mb-4">Solicitar Ajuda</h1>
+
             <form
-                className="w-full max-w-md border-2 border-blue-500 rounded-md bg-blue-100 text-center mx-auto p-4"
+                className="w-full max-w-md border-2 border-blue-600 rounded-md bg-blue-100 mx-auto p-6 text-center"
                 onSubmit={handleSubmit}
             >
                 <div className="flex flex-col items-center">
-                    <label htmlFor="cep" className="mt-4">CEP:</label>
+                    <label
+                        htmlFor="cep"
+                        className="mt-6 w-full text-center font-semibold"
+                    >
+                        CEP:
+                    </label>
                     <input
                         type="text"
                         id="cep"
@@ -127,12 +133,22 @@ const SolicitarAjuda = () => {
                         onChange={(e) =>
                             setFormData({ ...formData, cep: formatCep(e.target.value) })
                         }
-                        className={`p-2 rounded-md w-11/12 bg-white mx-auto border ${errors.cep ? "border-red-500" : "border-blue-500"}`}
+                        className={`p-3 rounded-md w-full bg-white border
+        focus:outline-none focus:ring-2 focus:ring-blue-400
+        ${errors.cep ? "border-red-500" : "border-blue-500"}`}
                         placeholder="00000-000"
-                    />
-                    {errors.cep && <p className="text-red-500 mt-1">{errors.cep}</p>}
 
-                    <label htmlFor="contactInfo" className="mt-4">Telefone:</label>
+                    />
+                    {errors.cep && (
+                        <p className="text-red-500 mt-1">{errors.cep}</p>
+                    )}
+
+                    <label
+                        htmlFor="contactInfo"
+                        className="mt-6 w-full text-center font-semibold"
+                    >
+                        Telefone:
+                    </label>
                     <input
                         type="text"
                         id="contactInfo"
@@ -141,24 +157,41 @@ const SolicitarAjuda = () => {
                         onChange={(e) =>
                             setFormData({ ...formData, contactInfo: formatTelefone(e.target.value) })
                         }
-                        className={`p-2 rounded-md w-11/12 bg-white mx-auto border ${errors.contactInfo ? "border-red-500" : "border-blue-500"}`}
+                        className={`p-3 rounded-md w-full bg-white border
+        focus:outline-none focus:ring-2 focus:ring-blue-400
+        ${errors.contactInfo ? "border-red-500" : "border-blue-500"}`}
                         placeholder="(00) 00000-0000"
-                    />
-                    {errors.contactInfo && <p className="text-red-500 mt-1">{errors.contactInfo}</p>}
 
-                    <label htmlFor="notes" className="mt-4">Descrição:</label>
+                    />
+                    {errors.contactInfo && (
+                        <p className="text-red-500 mt-1">{errors.contactInfo}</p>
+                    )}
+
+                    <label
+                        htmlFor="notes"
+                        className="mt-6 w-full text-center font-semibold"
+                    >
+                        Descrição:
+                    </label>
                     <textarea
                         id="notes"
                         value={formData.notes}
                         onChange={(e) =>
                             setFormData({ ...formData, notes: e.target.value })
                         }
-                        className={`p-2 rounded-md w-11/12 h-36 resize-none bg-white mx-auto border ${errors.notes ? "border-red-500" : "border-blue-500"}`}
+                        className={`p-3 rounded-md w-full h-36 resize-none bg-white border
+        focus:outline-none focus:ring-2 focus:ring-blue-400
+        ${errors.notes ? "border-red-500" : "border-blue-500"}`}
                         placeholder="Descreva sua situação."
-                    />
-                    {errors.notes && <p className="text-red-500 mt-1">{errors.notes}</p>}
 
-                    <Botao type="submit" texto="Enviar" carregando={carregando} />
+                    />
+                    {errors.notes && (
+                        <p className="text-red-500 mt-1">{errors.notes}</p>
+                    )}
+
+                    <div className="w-full flex justify-center mt-8">
+                        <Botao type="submit" texto="Enviar" carregando={carregando} />
+                    </div>
                 </div>
             </form>
 

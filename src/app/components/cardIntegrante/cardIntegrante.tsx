@@ -13,22 +13,24 @@ type Props = {
 
 const CardIntegrante = ({ nome, rm, turma, foto, linkedin }: Props) => {
     return (
-        <article className="mb-5 border-4 border-blue-600 p-4 sm:p-4 md:p-5 text-center">
+        <article className="mb-8 border-4 border-blue-600 p-4 text-center rounded-2xl shadow-md transition hover:shadow-lg">
             <Image
                 src={foto}
                 alt={`Foto do integrante ${nome}`}
                 width={500}
                 height={500}
-                className="aspect-square mx-auto rounded-md w-56 h-56 sm:w-60 sm:h-60 md:w-64 md:h-64 max-w-full max-h-full"
+                className="aspect-square mx-auto rounded-xl shadow w-56 h-56 sm:w-60 sm:h-60 md:w-64 md:h-64 object-cover"
             />
-            <p className="mb-2.5 text-xl font-semibold mt-3">{nome}</p>
-            <p className="mb-2.5">RM: {rm}</p>
-            <p className="mb-2.5">Turma: {turma}</p>
+            <p className="text-xl sm:text-2xl font-bold mt-4">
+                {nome}
+            </p>
+            <p>RM: {rm}</p>
+            <p className=" mb-3">Turma: {turma}</p>
             <a
                 href={linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 text-5xl hover:text-blue-800 transition mt-2 inline-block"
+                className="text-blue-600 text-5xl hover:scale-110 hover:text-blue-800 transition duration-200 inline-block"
             >
                 <FaLinkedin />
             </a>

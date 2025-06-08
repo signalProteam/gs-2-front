@@ -17,7 +17,7 @@ const Botao: React.FC<BotaoProps> = ({
         <button
             type={type}
             onClick={onClick}
-            className={`bg-blue-500 font-bold text-white border border-blue-600 rounded-md py-3 m-4 cursor-pointer w-64 max-w-3/4 transition-colors duration-300 hover:bg-blue-600 ${carregando ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`bg-blue-500 font-bold text-white border border-blue-600 rounded-md py-3 m-4 cursor-pointer w-64 transition-colors duration-300 hover:bg-blue-600 ${carregando ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={carregando}
         >
             {carregando ? "Carregando..." : texto}

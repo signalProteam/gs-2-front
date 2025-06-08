@@ -3,7 +3,7 @@ export function Footer() {
 
     return (
         <>
-            <footer className="text-center font-bold bg-blue-400 py-1 mt-auto bottom-0 inset-x-0 text-white">
+            <footer className="text-center font-semibold bg-blue-400 py-3 mt-auto text-white">
                 <p>&copy; VOZ - {anoAtual}</p>
             </footer>
         </>

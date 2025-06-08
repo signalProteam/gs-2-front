@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="pt-br">
-            <body className="font-sans antialiased bg-blue-100 text-gray-900 text-lg m-0 p-0 leading-relaxed min-h-screen flex flex-col">
+            <body className="font-sans antialiased bg-blue-50 text-gray-900 text-lg m-0 p-0 leading-relaxed min-h-screen flex flex-col">
                 <Header />
                 {children}
                 <Footer />

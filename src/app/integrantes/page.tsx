@@ -37,9 +37,10 @@ const Integrantes = () => {
                         />
                     </div>
 
-                    <h2 className="text-2xl font-semibold mt-10">
+                    <h2 className="text-2xl font-semibold mt-16">
                         GitHub da equipe
                     </h2>
+
                     <a
                         href="https://github.com/signalProteam"
                         target="_blank"
