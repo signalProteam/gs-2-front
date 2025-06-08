@@ -16,11 +16,6 @@
     @apply mt-4;
 }
 
-.section-conteudo p {
-    @apply text-justify;
-}
-
-
 .section-conteudo label {
     @apply font-semibold
 }
