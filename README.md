@@ -62,5 +62,4 @@ Vídeo do projeto:
 [https://youtu.be/sgy5AO5kYwM](https://youtu.be/sgy5AO5kYwM)
 
 Site do projeto:
-Acesse o sistema pela URL disponibilizada no Vercel:
 [https://voz-opal.vercel.app/](https://voz-opal.vercel.app/)
